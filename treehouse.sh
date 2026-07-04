@@ -25,7 +25,18 @@ pool_dir() { echo "$TH_ROOT/$(repo_name)"; }
 # Canonicalize a directory path (resolve symlinks) so pool-membership checks match
 # git's porcelain output, which reports REAL paths. Without this, a pool under a
 # symlinked root (e.g. macOS /var -> /private/var) makes sweep/glance miss the pool.
-_realdir() { if [ -d "$1" ]; then (cd "$1" 2>/dev/null && pwd -P) || echo "$1"; else echo "$1"; fi; }
+# Degrades LOUDLY: if the dir exists but can't be entered, pool matching will miss
+# real-path worktrees, so say so instead of quietly reporting an empty pool.
+_realdir() {
+  if [ -d "$1" ]; then
+    (cd "$1" 2>/dev/null && pwd -P) || {
+      echo "treehouse: WARN cannot resolve '$1' -- pool matching may miss worktrees" >&2
+      echo "$1"
+    }
+  else
+    echo "$1"
+  fi
+}
 pool_dir_real() { _realdir "$(pool_dir)"; }
 
 # Per-worktree status helpers (operate on an arbitrary worktree path).
@@ -83,6 +94,9 @@ cmd_spin() {
   case "$n" in ''|*[!0-9]*) die "N must be a positive integer";; esac
   local prefix="${2:-wt}" base="${3:-HEAD}" pool; pool="$(pool_dir)"
   mkdir -p "$pool"
+  # Canonicalize AFTER mkdir so spin creates + prints the same real paths that
+  # glance/ls/sweep will later match against git's porcelain output.
+  pool="$(_realdir "$pool")"
   local i name path branch
   for i in $(seq 1 "$n"); do
     name="${prefix}-${i}"; path="$pool/$name"; branch="th/${name}"
