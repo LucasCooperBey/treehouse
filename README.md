@@ -11,7 +11,7 @@ Single-file bash, no dependencies beyond `git` (tmux optional).
 ## Install
 
 ```sh
-git clone https://github.com/Lucface/treehouse
+git clone https://github.com/LucasCooperBey/treehouse
 ln -s "$PWD/treehouse/treehouse.sh" ~/.local/bin/treehouse
 ```
 
@@ -50,8 +50,8 @@ test/test_treehouse.sh   # hermetic: temp repo + temp pool, no tmux
 
 ## Related
 
-- [review-gate](https://github.com/Lucface/review-gate) — fresh-context adversarial review for the pushes coming out of those worktrees
-- [harness-guard](https://github.com/Lucface/harness-guard) — drop-in safety hooks for agent sessions
+- [review-gate](https://github.com/LucasCooperBey/review-gate) — fresh-context adversarial review for the pushes coming out of those worktrees
+- [harness-guard](https://github.com/LucasCooperBey/harness-guard) — drop-in safety hooks for agent sessions
 
 ## License
 
