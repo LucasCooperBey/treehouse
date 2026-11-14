@@ -42,6 +42,38 @@ Safety properties, in order: it only ever looks inside the pool directory (never
 
 List pooled worktrees for the current repo.
 
+## Example
+
+In a repo on `main`, make two pooled worktrees, look at the pool, and ask what is safe to drop:
+
+```sh
+treehouse spin 2
+treehouse sweep
+```
+
+`spin` creates the branches and prints the status table:
+
+```
+spun  wt-1  ->  ~/.treehouse/demo/wt-1   (th/wt-1)
+spun  wt-2  ->  ~/.treehouse/demo/wt-2   (th/wt-2)
+
+WORKTREE      BRANCH     DIRTY  AHEAD/BEHIND
+demo          main       no     -
+              th/wt-1    no     -
+              th/wt-2    no     -
+
+treehouse: 3 worktrees, 0 dirty.
+```
+
+After an edit in `wt-1`, `sweep` keeps the dirty worktree and only lists the clean, merged one. Nothing is removed until you add `--force`:
+
+```
+  KEEP  wt-1 (dirty)
+  DROP  wt-2 (clean+merged)  <- would remove
+
+treehouse: dry-run. 1 kept. Re-run with --force to remove the DROP entries.
+```
+
 ## Tests
 
 ```sh
